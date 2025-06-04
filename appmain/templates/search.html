@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   캐릭터 검색 결과
+  </title>
+  <style>
+   body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f7f7f7;
+      padding: 40px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+    }
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    select, input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .character-box {
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 40px;
+      background-color: white;
+    }
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-button {
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #e0e0e0;
+    }
+    .tab-button.active {
+      background-color: #007bff;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+    .equipment-column {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .equipment-slot {
+      width: 64px;
+      height: 80px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 12px;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 4px;
+    }
+    .equipment-slot img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      margin-bottom: 4px;
+    }
+    .character-image {
+      text-align: center;
+    }
+    .character-image img {
+      width: 100px;
+      height: 120px;
+    }
+    .set-info {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .character-form {
+      text-align: center;
+      margin-top: 30px;
+    }
+  </style>
+  <style>
+   .card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.character-card {
+  width: 180px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+.character-card img {
+  width: 80px;
+  height: 96px;
+}
+.character-info {
+  font-size: 14px;
+  margin-top: 10px;
+}
+  </style>
+ </head>
+ <body>
+  <div class="container">
+   <h2>
+    캐릭터 검색
+   </h2>
+   <form action="/search" class="search-bar" method="post">
+    <select name="server">
+     <option value="전체">
+      전체
+     </option>
+     <option value="cain">
+      카인
+     </option>
+     <option value="diregie">
+      디레지에
+     </option>
+     <option value="siroco">
+      시로코
+     </option>
+     <option value="prey">
+      프레이
+     </option>
+     <option value="casillas">
+      카시야스
+     </option>
+     <option value="hilder">
+      힐더
+     </option>
+     <option value="anton">
+      안톤
+     </option>
+     <option value="bakal">
+      바칼
+     </option>
+    </select>
+    <input name="nickname" placeholder="캐릭터명을 입력하세요" required="" type="text"/>
+    <button type="submit">
+     🔍 검색
+    </button>
+   </form>
+   {% for char in characters %}
+   {% endfor %}
+   <div class="card-grid">
+    {% for char in characters %}
+    <div class="character-card">
+     <img alt="캐릭터 이미지" src="{{ char.image_url }}"/>
+     <div class="character-info">
+      <strong>
+       {{ char.characterName }}
+      </strong>
+      <br/>
+      {{ char.jobName }}
+      <br/>
+      명성 {{ char.fame }}
+      <br/>
+      모험단 {{ char.adventureName }}
+     </div>
+     <form action="/select_character" method="post">
+      <input name="character_id" type="hidden" value="{{ char.characterId }}"/>
+      <input name="server_id" type="hidden" value="{{ char.serverId }}"/>
+      <button type="submit">
+       선택
+      </button>
+     </form>
+    </div>
+    {% endfor %}
+   </div>
+  </div>
+  <script>
+   function switchTab(evt, index, tabName) {
+  evt.preventDefault();
+  const parent = evt.target.closest('.character-box');
+  parent.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+  parent.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+  evt.target.classList.add('active');
+  parent.querySelector(`#${tabName}-${index}`).classList.add('active');
+}
+  </script>
+ </body>
+</html>

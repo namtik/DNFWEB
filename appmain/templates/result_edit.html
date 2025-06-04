@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ character.name }} 장비 보기</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+    }
+    .tab-buttons {
+      margin: 20px;
+    }
+    .tab-buttons button {
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+    .tab-buttons button.active {
+      background-color: #007bff;
+    }
+    .layout {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      gap: 40px;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .slot {
+      width: 64px;
+      height: 80px;
+      background-color: #222;
+      border: 1px solid #999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: white;
+    }
+    .slot img {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 4px;
+    }
+    .center-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .character-img {
+      width: 120px;
+      height: 140px;
+      background-color: #000;
+      margin-bottom: 10px;
+    }
+    .fame-box {
+      background: black;
+      padding: 8px 16px;
+      margin-top: 10px;
+      color: cyan;
+      border: 1px solid #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>{{ character.name }} - 장비 보기</h1>
+  <div class="tab-buttons">
+    <button onclick="showTab('equipment')" class="active">장비</button>
+    <button onclick="showTab('fusion')">융합석</button>
+    <button onclick="showTab('enchant')">마부</button>
+  </div>
+  <div class="layout">
+    <div class="column">
+      {% for slot in ["머리어깨", "상의", "하의", "벨트", "신발"] %}
+      <div class="slot">
+        <img src="{{ character.equipment[slot].icon_url }}" alt="">
+        {{ slot }}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="center-info">
+      <img src="{{ character.image_url }}" class="character-img" alt="캐릭터 이미지">
+      <div class="fame-box">
+        세트 없음<br>{{ character.fame }}pt
+      </div>
+    </div>
+    <div class="column">
+      {% for slot in ["무기", "칭호", "팔찌", "목걸이", "반지", "보조장비", "귀걸이", "마법석"] %}
+      <div class="slot">
+        <img src="{{ character.equipment[slot].icon_url }}" alt="">
+        {{ slot }}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      const buttons = document.querySelectorAll('.tab-buttons button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      // 실제 내용은 백엔드 연동 필요
+    }
+  </script>
+</body>
+</html>

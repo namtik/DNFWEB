@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>캐릭터 분석 결과</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+    .left-panel {
+      width: 50%;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      padding: 20px;
+    }
+    .right-panel {
+      width: 50%;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      padding: 20px;
+    }
+    .equipment-grid {
+      display: flex;
+      justify-content: space-between;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .center-column {
+      align-items: center;
+    }
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .tab-buttons button {
+      padding: 6px 16px;
+      border: 1px solid #999;
+      background: #eee;
+      cursor: pointer;
+    }
+    .info-fields {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .info-fields input {
+      width: 45%;
+      padding: 6px;
+    }
+    .filters {
+      margin: 10px 0;
+      text-align: center;
+    }
+    .filters label {
+      margin-right: 20px;
+    }
+    .analyze-button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: #673ab7;
+      color: #fff;
+      border: none;
+      margin-top: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .recommendation {
+      background: #b0d0db;
+      margin-bottom: 20px;
+      padding: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <div class="tab-buttons">
+        <button>장비</button>
+        <button>융합석</button>
+        <button>마부</button>
+      </div>
+      <div class="equipment-grid">
+        <div class="column">
+          <div>머리어깨</div>
+          <div>상의</div>
+          <div>하의</div>
+          <div>벨트</div>
+          <div>신발</div>
+        </div>
+        <div class="column center-column">
+          <div>캐릭터</div>
+          <div>명성</div>
+        </div>
+        <div class="column">
+          <div>무기</div>
+          <div>칭호</div>
+          <div>팔찌</div>
+          <div>목걸이</div>
+          <div>반지</div>
+          <div>보조장비</div>
+          <div>귀걸이</div>
+          <div>마법석</div>
+        </div>
+      </div>
+
+      <div class="info-fields">
+        <input type="text" placeholder="명성 목표 입력">
+        <input type="text" placeholder="딜 목표 입력">
+      </div>
+      <div class="filters">
+        <label><input type="checkbox"> 보이드 소울 사용</label>
+        <label><input type="checkbox"> 골드 사용</label>
+      </div>
+      <button class="analyze-button">분석</button>
+    </div>
+
+    <div class="right-panel">
+      <div class="recommendation">추천1</div>
+      <div class="recommendation">추천2</div>
+      <div class="recommendation">추천3</div>
+    </div>
+  </div>
+</body>
+</html>
