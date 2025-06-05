@@ -4,12 +4,22 @@ import requests
 API_KEY = "Tz46hw8cZQ0m4znC6r19sqrMM7L7BhCb"
 
 def get_character_info(nickname, server='cain'):
+    search_url = f"https://api.neople.co.kr/df/servers/{server}/characters?characterName={nickname}&apikey={API_KEY}&limit=1"
+    search_res = requests.get(search_url).json()
+    if not search_res.get("rows"):
+        return None
+
+    character = search_res["rows"][0]
+    character_id = character["characterId"]
+
     info_url = f"https://api.neople.co.kr/df/servers/{server}/characters/{character_id}?apikey={API_KEY}"
     info_res = requests.get(info_url).json()
 
-    # 장비 정보
     equip_url = f"https://api.neople.co.kr/df/servers/{server}/characters/{character_id}/equip/equipment?apikey={API_KEY}"
     equip_res = requests.get(equip_url).json()
+
+    # ... 이하 동일 ...
+
 
     left_order = ["무기", "상의", "하의", "머리어깨", "벨트", "신발"]
     right_order = ["보조장비", "마법석", "귀걸이", "반지", "목걸이", "칭호"]
