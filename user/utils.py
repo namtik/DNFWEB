@@ -18,9 +18,6 @@ def get_character_info(nickname, server='cain'):
     equip_url = f"https://api.neople.co.kr/df/servers/{server}/characters/{character_id}/equip/equipment?apikey={API_KEY}"
     equip_res = requests.get(equip_url).json()
 
-    # ... 이하 동일 ...
-
-
     left_order = ["무기", "상의", "하의", "머리어깨", "벨트", "신발"]
     right_order = ["보조장비", "마법석", "귀걸이", "반지", "목걸이", "칭호"]
 
