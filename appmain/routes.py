@@ -56,7 +56,7 @@ def select_character():
 
     return render_template("result.html", character=character)
 
-@app.route('/result')
+@main.route('/result')
 def result():
     character_id = request.args.get('character_id')
     server_id = request.args.get('server_id')
