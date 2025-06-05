@@ -22,13 +22,8 @@
       padding: 20px;
     }
 
-    .left-panel {
-      width: 60%;
-    }
-
-    .right-panel {
-      width: 40%;
-    }
+    .left-panel { width: 60%; }
+    .right-panel { width: 40%; }
 
     .tab-buttons {
       display: flex;
@@ -49,10 +44,14 @@
       color: white;
     }
 
-    .equipment-grid {
-      display: flex;
+    .tab-content {
+      display: none;
       justify-content: space-between;
       margin-bottom: 20px;
+    }
+
+    .tab-content.active {
+      display: flex;
     }
 
     .column {
@@ -110,53 +109,47 @@
       text-align: center;
       font-size: 18px;
     }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: flex;
-      justify-content: space-between;
-    }
   </style>
   <script>
     function switchTab(button) {
       const tabName = button.dataset.tab;
-
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-
       button.classList.add('active');
       document.getElementById(`${tabName}-content`).classList.add('active');
-  }
+    }
   </script>
 </head>
 <body>
   <div class="container">
     <!-- Left Panel -->
     <div class="left-panel">
+      <!-- 탭 버튼 -->
       <div class="tab-buttons">
         <button class="tab-button active" data-tab="equipment" onclick="switchTab(this)">장비</button>
         <button class="tab-button" data-tab="fusion" onclick="switchTab(this)">융합석</button>
         <button class="tab-button" data-tab="enchant" onclick="switchTab(this)">마부</button>
       </div>
 
-      <!-- 장비, 융합석, 마부 공통 레이아웃 -->
+      <!-- 장비/융합석/마부 컨텐츠 반복 -->
       {% for tab, items in [('equipment', character.left_slots + character.right_slots), 
-                      ('fusion', character.fusion_stones), 
-                      ('enchant', character.enchantments)] %}
+                            ('fusion', character.fusion_stones), 
+                            ('enchant', character.enchantments)] %}
       <div class="tab-content {% if loop.first %}active{% endif %}" id="{{ tab }}-content">
         <div class="column">
           {% for slot in ['머리어깨', '상의', '하의', '벨트', '신발'] %}
-          {% set item = items | selectattr('slotName', 'equalto', slot) | list | first %}
-          <div class="slot-box">
-            {% if item %}
-              <img src="{{ item.icon_url }}"><br>{{ slot }}
-            {% else %}
-              {{ slot }}
-            {% endif %}
-          </div>
+            {% set item = items | selectattr('slotName', 'equalto', slot) | list | first %}
+            <div class="slot-box">
+              {% if item %}
+                <img src="{{ item.icon_url }}"><br>
+                {% if item.enhancement %}
+                  +{{ item.enhancement }}
+                {% endif %}
+                {{ slot }}
+              {% else %}
+                {{ slot }}
+              {% endif %}
+            </div>
           {% endfor %}
         </div>
         <div class="column center-column">
@@ -169,23 +162,30 @@
         </div>
         <div class="column">
           {% for slot in ['무기', '칭호', '팔찌', '목걸이', '반지', '보조장비', '귀걸이', '마법석'] %}
-          {% set item = items | selectattr('slotName', 'equalto', slot) | list | first %}
-          <div class="slot-box">
-            {% if item %}
-              <img src="{{ item.icon_url }}"><br>
-              {% if item.enhancement %}
-                +{{ item.enhancement }} 
+            {% set item = items | selectattr('slotName', 'equalto', slot) | list | first %}
+            <div class="slot-box">
+              {% if item %}
+                <img src="{{ item.icon_url }}"><br>
+                {% if item.enhancement %}
+                  +{{ item.enhancement }}
+                {% endif %}
+                {{ slot }}
+              {% else %}
+                {{ slot }}
               {% endif %}
-              {{ slot }}
-            {% else %}
-              {{ slot }}
-            {% endif %}
+            </div>
+          {% endfor %}
+        </div>
       </div>
+      {% endfor %}
+
+      <!-- 입력 필드 -->
       <div class="info-fields">
         <input type="text" placeholder="명성 목표 입력">
         <input type="text" placeholder="딜 목표 입력">
       </div>
 
+      <!-- 필터 -->
       <div class="filters">
         <label><input type="checkbox"> 보이드 소울 사용</label>
         <label><input type="checkbox"> 골드 사용</label>
