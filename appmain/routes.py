@@ -49,11 +49,13 @@ def search():
     
 @main.route("/select_character", methods=["POST"])
 def select_character():
-    character_id = request.form["character_id"]
-    server_id = request.form["server_id"]
+    character_id = request.form.get("character_id")
+    server_id = request.form.get("server_id")
+
+    if not character_id or not server_id:
+        return "잘못된 요청입니다.", 400
 
     character = get_character_info_by_id(character_id, server_id)
-
     return render_template("result.html", character=character)
 
 @main.route('/result', methods=['POST'])
