@@ -162,7 +162,8 @@
         <div class="column center-column">
           <img src="{{ character.image_url }}" style="width:100px;"><br>
           <strong>{{ character.name }}</strong><br>
-          {{ character.job_name }}<br>
+          서버: {{ character.server_id }}<br>
+          직업: {{ character.job_name }}<br>
           명성: {{ character.fame }}<br>
           세트: {{ character.set_name }}
         </div>
@@ -171,16 +172,15 @@
           {% set item = items | selectattr('slotName', 'equalto', slot) | list | first %}
           <div class="slot-box">
             {% if item %}
-              <img src="{{ item.icon_url }}"><br>{{ slot }}
+              <img src="{{ item.icon_url }}"><br>
+              {% if item.enhancement %}
+                +{{ item.enhancement }} 
+              {% endif %}
+              {{ slot }}
             {% else %}
               {{ slot }}
             {% endif %}
-          </div>
-          {% endfor %}
-        </div>
       </div>
-      {% endfor %}
-
       <div class="info-fields">
         <input type="text" placeholder="명성 목표 입력">
         <input type="text" placeholder="딜 목표 입력">
