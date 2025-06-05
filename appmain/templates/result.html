@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,73 +10,99 @@
       margin: 0;
       padding: 20px;
     }
+
     .container {
       display: flex;
       gap: 20px;
     }
+
+    .left-panel, .right-panel {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+    }
+
     .left-panel {
-      width: 50%;
-      background: #ffffff;
-      border: 1px solid #ccc;
-      padding: 20px;
+      width: 60%;
     }
+
     .right-panel {
-      width: 50%;
-      background: #ffffff;
-      border: 1px solid #ccc;
-      padding: 20px;
+      width: 40%;
     }
-    .equipment-grid {
-      display: flex;
-      justify-content: space-between;
-    }
-    .column {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .center-column {
-      align-items: center;
-    }
+
     .tab-buttons {
       display: flex;
       justify-content: center;
       gap: 10px;
       margin-bottom: 10px;
     }
-    .tab-buttons button {
-      padding: 6px 16px;
-      border: 1px solid #999;
-      background: #eee;
+
+    .tab-button {
+      padding: 8px 20px;
+      background: #ddd;
+      border: 1px solid #aaa;
       cursor: pointer;
     }
-    .info-fields {
+
+    .tab-button.active {
+      background: #007bff;
+      color: white;
+    }
+
+    .equipment-grid {
       display: flex;
-      justify-content: space-around;
-      margin-top: 20px;
+      justify-content: space-between;
+      margin-bottom: 20px;
     }
-    .info-fields input {
-      width: 45%;
-      padding: 6px;
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
-    .filters {
-      margin: 10px 0;
+
+    .slot-box {
+      width: 64px;
+      height: 64px;
+      border: 1px solid #999;
       text-align: center;
+      font-size: 12px;
     }
+
+    .slot-box img {
+      width: 48px;
+      height: 48px;
+    }
+
+    .center-column {
+      align-items: center;
+    }
+
+    .info-fields, .filters {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .info-fields input[type="text"] {
+      width: 48%;
+      padding: 8px;
+    }
+
     .filters label {
       margin-right: 20px;
     }
+
     .analyze-button {
-      display: block;
       width: 100%;
       padding: 10px;
       background: #673ab7;
       color: #fff;
       border: none;
-      margin-top: 10px;
       font-size: 16px;
       cursor: pointer;
     }
+
     .recommendation {
       background: #b0d0db;
       margin-bottom: 20px;
@@ -85,55 +110,93 @@
       text-align: center;
       font-size: 18px;
     }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: flex;
+      justify-content: space-between;
+    }
   </style>
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+      document.getElementById(`${tabName}-content`).classList.add('active');
+    }
+  </script>
 </head>
 <body>
   <div class="container">
+    <!-- Left Panel -->
     <div class="left-panel">
       <div class="tab-buttons">
-        <button>장비</button>
-        <button>융합석</button>
-        <button>마부</button>
+        <button class="tab-button active" id="equipment-tab" onclick="switchTab('equipment')">장비</button>
+        <button class="tab-button" id="fusion-tab" onclick="switchTab('fusion')">융합석</button>
+        <button class="tab-button" id="enchant-tab" onclick="switchTab('enchant')">마부</button>
       </div>
-      <div class="equipment-grid">
+
+      <!-- 장비, 융합석, 마부 공통 레이아웃 -->
+      {% for tab, items in [('equipment', char.left_slots + char.right_slots),
+                            ('fusion', char.fusion_stones),
+                            ('enchant', char.enchantments)] %}
+      <div class="tab-content {% if loop.first %}active{% endif %}" id="{{ tab }}-content">
         <div class="column">
-          <div>머리어깨</div>
-          <div>상의</div>
-          <div>하의</div>
-          <div>벨트</div>
-          <div>신발</div>
+          {% for slot in ['머리어깨', '상의', '하의', '벨트', '신발'] %}
+          {% set item = items | selectattr('slotName', 'equalto', slot) | list | first %}
+          <div class="slot-box">
+            {% if item %}
+              <img src="{{ item.icon_url }}"><br>{{ slot }}
+            {% else %}
+              {{ slot }}
+            {% endif %}
+          </div>
+          {% endfor %}
         </div>
-      <div class="column center-column">
-        <div><img src="{{ character.image_url }}" alt="캐릭터 이미지" width="80"></div>
-        <div>명성 {{ character.fame }}</div>
-      </div>
+        <div class="column center-column">
+          <img src="{{ char.image_url }}" style="width:100px;"><br>
+          <strong>{{ char.name }}</strong><br>
+          {{ char.job_name }}<br>
+          명성: {{ char.fame }}<br>
+          세트: {{ char.set_name }}
+        </div>
         <div class="column">
-          <div>무기</div>
-          <div>칭호</div>
-          <div>팔찌</div>
-          <div>목걸이</div>
-          <div>반지</div>
-          <div>보조장비</div>
-          <div>귀걸이</div>
-          <div>마법석</div>
+          {% for slot in ['무기', '칭호', '팔찌', '목걸이', '반지', '보조장비', '귀걸이', '마법석'] %}
+          {% set item = items | selectattr('slotName', 'equalto', slot) | list | first %}
+          <div class="slot-box">
+            {% if item %}
+              <img src="{{ item.icon_url }}"><br>{{ slot }}
+            {% else %}
+              {{ slot }}
+            {% endif %}
+          </div>
+          {% endfor %}
         </div>
       </div>
+      {% endfor %}
 
       <div class="info-fields">
         <input type="text" placeholder="명성 목표 입력">
         <input type="text" placeholder="딜 목표 입력">
       </div>
+
       <div class="filters">
         <label><input type="checkbox"> 보이드 소울 사용</label>
         <label><input type="checkbox"> 골드 사용</label>
       </div>
+
       <button class="analyze-button">분석</button>
     </div>
 
+    <!-- Right Panel -->
     <div class="right-panel">
-      <div class="recommendation">추천1</div>
-      <div class="recommendation">추천2</div>
-      <div class="recommendation">추천3</div>
+      <div class="recommendation">추천 루트 1</div>
+      <div class="recommendation">추천 루트 2</div>
+      <div class="recommendation">추천 루트 3</div>
     </div>
   </div>
 </body>
