@@ -56,12 +56,12 @@ def select_character():
 
     return render_template("result.html", character=character)
 
-@main.route('/result')
-def result():
-    character_id = request.args.get('character_id')
-    server_id = request.args.get('server_id')
+@main.route('/result', methods=['POST'])
+def show_result():
+    character_id = request.form.get("character_id")
+    server_id = request.form.get("server_id")
 
-    character_data = get_character_info_by_id(character_id, server_id)
+    char_info = get_character_info_by_id(character_id, server_id)
+    return render_template("result.html", char=char_info)
 
-    return render_template('result.html', character=character_data)
 
