@@ -121,13 +121,15 @@
     }
   </style>
   <script>
-    function switchTab(tabName) {
+    function switchTab(button) {
+      const tabName = button.dataset.tab;
+
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
 
-      document.getElementById(`${tabName}-tab`).classList.add('active');
+      button.classList.add('active');
       document.getElementById(`${tabName}-content`).classList.add('active');
-    }
+  }
   </script>
 </head>
 <body>
@@ -135,15 +137,15 @@
     <!-- Left Panel -->
     <div class="left-panel">
       <div class="tab-buttons">
-        <button class="tab-button active" id="equipment-tab" onclick="switchTab('equipment')">장비</button>
-        <button class="tab-button" id="fusion-tab" onclick="switchTab('fusion')">융합석</button>
-        <button class="tab-button" id="enchant-tab" onclick="switchTab('enchant')">마부</button>
+        <button class="tab-button active" data-tab="equipment" onclick="switchTab(this)">장비</button>
+        <button class="tab-button" data-tab="fusion" onclick="switchTab(this)">융합석</button>
+        <button class="tab-button" data-tab="enchant" onclick="switchTab(this)">마부</button>
       </div>
 
       <!-- 장비, 융합석, 마부 공통 레이아웃 -->
-      {% for tab, items in [('equipment', char.left_slots + char.right_slots),
-                            ('fusion', char.fusion_stones),
-                            ('enchant', char.enchantments)] %}
+      {% for tab, items in [('equipment', character.left_slots + character.right_slots), 
+                      ('fusion', character.fusion_stones), 
+                      ('enchant', character.enchantments)] %}
       <div class="tab-content {% if loop.first %}active{% endif %}" id="{{ tab }}-content">
         <div class="column">
           {% for slot in ['머리어깨', '상의', '하의', '벨트', '신발'] %}
@@ -158,11 +160,11 @@
           {% endfor %}
         </div>
         <div class="column center-column">
-          <img src="{{ char.image_url }}" style="width:100px;"><br>
-          <strong>{{ char.name }}</strong><br>
-          {{ char.job_name }}<br>
-          명성: {{ char.fame }}<br>
-          세트: {{ char.set_name }}
+          <img src="{{ character.image_url }}" style="width:100px;"><br>
+          <strong>{{ character.name }}</strong><br>
+          {{ character.job_name }}<br>
+          명성: {{ character.fame }}<br>
+          세트: {{ character.set_name }}
         </div>
         <div class="column">
           {% for slot in ['무기', '칭호', '팔찌', '목걸이', '반지', '보조장비', '귀걸이', '마법석'] %}
