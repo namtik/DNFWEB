@@ -56,3 +56,12 @@ def select_character():
 
     return render_template("result.html", character=character)
 
+@app.route('/result')
+def result():
+    character_id = request.args.get('character_id')
+    server_id = request.args.get('server_id')
+
+    character_data = get_character_info_by_id(character_id, server_id)
+
+    return render_template('result.html', character=character_data)
+
