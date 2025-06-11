@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>캐릭터 분석 결과</title>
+  <style>
+    body {
+      background: #eef2f5;
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .viewport {
+      max-width: 1000px;
+      margin: auto;
+    }
+    .result-box {
+      background: #dae1e8;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* 1. 캐릭터 정보 */
+    .character-info {
+      text-align: center;
+      position: relative;
+    }
+    .character-info img {
+      position: absolute;
+      top: -60px;
+      right: 0;
+      width: 120px;
+    }
+
+    /* 2. 슬롯 컨테이너: 좌/중/우 Flex */
+    .slot-container {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    /* 3. 좌/우 슬롯: Grid 세로 5줄 (좌) / 8줄 (우) */
+    .slots-left,
+    .slots-right {
+      display: grid;
+      grid-gap: 10px;
+    }
+    .slots-left {
+      grid-template-rows: repeat(5, 80px);
+    }
+    .slots-right {
+      grid-template-rows: repeat(8, 80px);
+    }
+
+    /* 4. 슬롯 박스 */
+    .slot {
+      width: 80px;
+      height: 80px;
+      background: #fff;
+      border: 2px solid #5d1f3a;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* 5. 뱃지 (융합/마부 앞글자) */
+    .badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    /* 6. 중앙 캐릭터 박스 */
+    .character-center {
+      width: 220px;
+      height: 220px;
+      background: #d0d4de;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .character-center img {
+      position: absolute;
+      top: -20px;
+      width: 100px;
+    }
+
+    /* 7. 세트포인트 · 명성 */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 40px;
+      font-weight: bold;
+    }
+
+    /* 8. 입력창 및 필터 */
+    .controls {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .controls input {
+      flex: 1;
+      padding: 8px;
+      font-size: 14px;
+    }
+    .filter {
+      width: 100%;
+      margin: 10px 0;
+    }
+    .filter label {
+      margin-right: 20px;
+    }
+
+    /* 9. 분석 버튼 */
+    .analyze-btn {
+      width: 100%;
+      padding: 12px;
+      background: #5d1f3a;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="viewport">
+    <div class="result-box">
+      <!-- 캐릭터 정보 -->
+      <div class="character-info">
+        <h2>{{ character.name }}</h2>
+        <p>서버: {{ character.server_name }}</p>
+        <p>직업: {{ character.jobName }}</p>
+        <p>명성: {{ character.fame }}</p>
+        <p>세트: {{ set_name }} ({{ set_count }}/{{ set_max }})</p>
+        <img src="{{ character.image_url }}" alt="{{ character.name }}">
+      </div>
+
+      <!-- 슬롯 영역 -->
+      <div class="slot-container">
+        <!-- 좌측 -->
+        <div class="slots-left">
+          {% for slot in ["머리어깨","상의","하의","벨트","신발"] %}
+          {% set it = equipment|selectattr('slotName','equalto',slot)|list|first %}
+          <div class="slot">
+            {% if it %}<img src="{{ it.icon_url }}" alt="{{ slot }}">{% else %}{{ slot }}{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- 중앙 캐릭터 -->
+        <div class="character-center">
+          캐릭터
+          <img src="{{ character.image_url }}" alt="">
+        </div>
+
+        <!-- 우측 -->
+        <div class="slots-right">
+          {% for slot in ["무기","칭호","팔찌","목걸이","보조장비","반지","귀걸이","마법석"] %}
+          {% set it = equipment|selectattr('slotName','equalto',slot)|list|first %}
+          {% set fs = fusion_stones|selectattr('slotName','equalto',slot)|list|first %}
+          {% set en = enchantments|selectattr('slotName','equalto',slot)|list|first %}
+          <div class="slot">
+            {% if it %}<img src="{{ it.icon_url }}" alt="{{ slot }}">{% else %}{{ slot }}{% endif %}
+            {% if fs %}<div class="badge">{{ fs.itemName[0] }}</div>
+            {% elif en %}<div class="badge">{{ en.itemName[0] }}</div>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- 세트포인트 · 명성 -->
+      <div class="stats">
+        <div>세트포인트: {{ set_count }}</div>
+        <div>명성: {{ character.fame }}</div>
+      </div>
+
+      <!-- 명성/딜 목표 입력 -->
+      <div class="controls">
+        <input type="text" name="goal_fame" placeholder="명성 목표 입력">
+        <input type="text" name="goal_damage" placeholder="딜 목표 입력">
+      </div>
+
+      <!-- 필터 -->
+      <div class="filter">
+        <label><input type="checkbox"> 보이드 소울</label>
+        <label><input type="checkbox"> 골드 사용</label>
+      </div>
+
+      <!-- 분석 버튼 -->
+      <button class="analyze-btn">분석</button>
+    </div>
+  </div>
+</body>
+</html>

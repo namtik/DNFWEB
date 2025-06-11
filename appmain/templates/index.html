@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>DUNPEC</title>
+  <style>
+.search-box {
+  width: 700px; /* 더 넓게 설정 */
+  margin: 40px auto;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+}
+
+.search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* form이 부모만큼 늘어나도록 */
+}
+
+.search-input-wrapper {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.search-input-wrapper select,
+.search-input-wrapper input[type="text"] {
+  height: 48px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0 12px;
+  flex: none;
+}
+
+.search-input-wrapper input[type="text"] {
+  flex: 1;
+}
+
+.search-input-wrapper button {
+  height: 48px;
+  padding: 0 24px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.logo-img {
+  height: 32px;
+  width: auto;
+}
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  margin-top: 40px;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+  <img src="{{ url_for('static', filename='img/logo.png') }}" alt="logo" class="logo-img">
+  <span class="logo-text">DUNPEC</span>
+</div>
+
+
+  <div class="search-box">
+  <form action="/search" method="POST" class="search-form">
+    <div class="search-input-wrapper">
+      <select name="server">
+        <option value="전체">전체</option>
+        <option value="cain">카인</option>
+        <option value="diregie">디레지에</option>
+        <option value="siroco">시로코</option>
+        <option value="prey">프레이</option>
+        <option value="casillas">카시야스</option>
+        <option value="hilder">힐더</option>
+        <option value="anton">안톤</option>
+        <option value="bakal">바칼</option>
+      </select>
+      <input type="text" name="nickname" placeholder="캐릭터명을 입력하세요" required>
+      <button type="submit">검색</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>
